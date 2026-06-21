@@ -1,0 +1,6 @@
+{
+  "name": "Ebook Seni Komunikasi Anak",
+  "description": "Aplikasi pembaca ebook untuk panduan parenting seni berkomunikasi dengan anak, terinspirasi buku laris dunia.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
