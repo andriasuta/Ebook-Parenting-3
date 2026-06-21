@@ -1,0 +1,56 @@
+name: Deploy Ebook to GitHub Pages
+
+on:
+  # Berjalan otomatis setiap kali ada perubahan yang diupload ke branch main atau master
+  push:
+    branches: [ "main", "master" ]
+  # Memungkinkan Anda menjalankan ini secara manual jika dibutuhkan
+  workflow_dispatch:
+
+# Mengatur izin (permissions) yang dibutuhkan agar GitHub Action bisa mengupload ke Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Mencegah ada dua proses build yang berjalan bersamaan
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # Tahap Build (Kompilasi kode program)
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+  # Tahap Deploy (Memublikasikan ke Internet)
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
